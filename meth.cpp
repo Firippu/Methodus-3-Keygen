@@ -19,8 +19,8 @@ int main(int argc,char **argv) {
 		}
 	}
 
-	short int inputIDAltered[40];
-	short int SeedAltered[16];
+	short int inputID2[40];
+	short int Seed2[16];
 
 	unsigned int hexPool1[512];
 	unsigned int hexPool2[512];
@@ -31,17 +31,17 @@ int main(int argc,char **argv) {
 		0x88,0x29,0x4E,0xA9
 	};
 
-	char Seed[16];
+	char Seed1[16];
 	char Result[16];
 
 	memset(hexPool2,0,sizeof hexPool2);
-	memset(SeedAltered,0,sizeof SeedAltered);
+	memset(Seed2,0,sizeof Seed2);
 	memset(hexPool1,0,sizeof hexPool1);
 	memset(Result,0,sizeof Result);
-	memset(inputIDAltered,0,sizeof inputIDAltered);
-	memset(Seed,0,sizeof Seed);
+	memset(inputID2,0,sizeof inputID2);
+	memset(Seed1,0,sizeof Seed1);
 
-	strcat(Seed,"caapass");
+	strcat(Seed1,"caapass");
 
 	int loopCount;
 	for(loopCount=0; loopCount<512; loopCount++) {
@@ -53,77 +53,76 @@ int main(int argc,char **argv) {
 	for(loopCount=0; loopCount<512; loopCount++) {
 		Var1=Var1+loopCount;
 		Var1=Var1&0xFF;
-
 		Var2=hexPool1[loopCount];
 		hexPool1[loopCount]=hexPool1[Var1];
 		hexPool1[Var1]=Var2;
 	}
 
-	int iReset=0;
+	int Resetter=0;
 	for(loopCount=0; loopCount<512; loopCount++) {
-		hexPool2[hexPool1[loopCount]]=iReset;
+		hexPool2[hexPool1[loopCount]]=Resetter;
 
-		iReset++;
+		Resetter++;
 
-		if(iReset==10) {
-			iReset=0;
+		if(Resetter==10) {
+			Resetter=0;
 		}
 	}
 
-	int iLettersCombined=0;
-	iReset=0;
-	int iLetter=0;
+	Resetter=0;
+	int Var3=0;
+	int Var4=0;
 	for(loopCount=0; loopCount<idLength; loopCount++) {
-		iLetter=inputID[loopCount]+inputIDAltered[iReset];
-		iLetter=iLetter^0x12;
+		Var4=inputID[loopCount]+inputID2[Resetter];
+		Var4=Var4^0x12;
 
-		inputIDAltered[iReset]=iLetter;
+		inputID2[Resetter]=Var4;
 
-		iReset++;
+		Resetter++;
 
-		iLettersCombined+=iLetter;
+		Var3+=Var4;
 
 		switch(loopCount) {
-			case  7: iReset=0; break;
-			case 15: iReset=0; break;
-			case 23: iReset=0; break;
-			case 31: iReset=0; break;
-			case 39: iReset=0; break;
+			case  7: Resetter=0; break;
+			case 15: Resetter=0; break;
+			case 23: Resetter=0; break;
+			case 31: Resetter=0; break;
+			case 39: Resetter=0; break;
 		}
 	}
 
-	int iSeedLen=strlen(Seed);
-	for(loopCount=0; loopCount<iSeedLen; loopCount++) {
-		SeedAltered[iReset]=Seed[loopCount]^0x19;
+	int seedLength=strlen(Seed1);
+	for(loopCount=0; loopCount<seedLength; loopCount++) {
+		Seed2[Resetter]=Seed1[loopCount]^0x19;
 
-		iLettersCombined=iLettersCombined+SeedAltered[iReset];
+		Var3=Var3+Seed2[Resetter];
 
-		iReset++;
-		switch(iReset) {
-			case 8: iReset=0; break;
+		Resetter++;
+
+		switch(Resetter) {
+			case 8: Resetter=0; break;
 		}
 	}
 
-	iLettersCombined=iLettersCombined&0x1FF;
+	Var3=Var3&0x1FF;
 
-	int iNumberChooser=0;
+	int Var5=0;
 	for(loopCount=0; loopCount<16; loopCount++) {
-		SeedAltered[loopCount]=SeedAltered[loopCount]^hexPool3[loopCount];
+		Seed2[loopCount]=Seed2[loopCount]^hexPool3[loopCount];
 
-		iNumberChooser=inputIDAltered[loopCount]^SeedAltered[loopCount];
-		iNumberChooser=iNumberChooser&0x1FF;
-		iNumberChooser=iNumberChooser-iLettersCombined;
+		Var5=inputID2[loopCount]^Seed2[loopCount];
+		Var5=Var5&0x1FF;
+		Var5=Var5-Var3;
 
-		if(iNumberChooser<0x0) {		// checks if number is negative
-			iNumberChooser=-iNumberChooser; // inverts negative number into positive
+		if(Var5<0x0) {		// checks if number is negative
+			Var5=-Var5; // inverts negative number into positive
 		} else {
-			iNumberChooser=iNumberChooser^0x0;
+			Var5=Var5^0x0;
 		}
 
-		Result[loopCount]=(hexPool2[iNumberChooser]+48); // +48 moves the hex offset to ascii numbers
+		Result[loopCount]=(hexPool2[Var5]+48); // +48 moves the hex offset to ascii numbers
 	}
 
 	printf("\tSuccess:\t%.*s\n",16,Result);
-
     return 0;
 }
