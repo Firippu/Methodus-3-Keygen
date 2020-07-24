@@ -1,3 +1,4 @@
 *.cpp text
 *.h text
 *.exe binary
+*.md text
