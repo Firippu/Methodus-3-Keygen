@@ -1,4 +1,5 @@
-*.cpp   text diff=cpp
-*.h     text diff=cpp
-*.exe   binary
-*.md    text
+* text=auto
+*.cpp text diff=cpp
+*.h text diff=cpp
+*.exe binary
+*.md text
